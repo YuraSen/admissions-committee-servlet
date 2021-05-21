@@ -1,6 +1,7 @@
 package com.senin.admissions_committee_servlet.DAO.mysql;
 
 import com.senin.admissions_committee_servlet.DAO.ApplicantDAO;
+import com.senin.admissions_committee_servlet.DAO.mapper.ApplicantMapper;
 import com.senin.admissions_committee_servlet.DAO.mapper.ApplicantProfileMapper;
 import com.senin.admissions_committee_servlet.entity.Applicant;
 import com.senin.admissions_committee_servlet.entity.ApplicantProfile;
@@ -115,8 +116,9 @@ public class MySqlApplicantDAO implements ApplicantDAO {
             pstmt = con.prepareStatement(Constants.SQL_FIND_APPLICANT_BY_USERNAME);
             pstmt.setString(1, username);
             rs = pstmt.executeQuery();
+            ApplicantMapper applicantMapper = new ApplicantMapper();
             if (rs.next())
-                applicant = mapApplicant(rs);
+                applicant = applicantMapper.extractFromResultSet(rs);
             rs.close();
             pstmt.close();
         } catch (SQLException ex) {
@@ -149,9 +151,9 @@ public class MySqlApplicantDAO implements ApplicantDAO {
         try (Connection con = connection;
              Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(Constants.SQL_FIND_ALL_APPLICANTS)) {
-
+            ApplicantMapper applicantMapper = new ApplicantMapper();
             while (rs.next()) {
-                listApplicants.add(mapApplicant(rs));
+                listApplicants.add(applicantMapper.extractFromResultSet(rs));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -198,7 +200,8 @@ public class MySqlApplicantDAO implements ApplicantDAO {
             conn.setAutoCommit(false);
             conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             pstmt = conn.prepareStatement(
-                    "UPDATE applicant_profile SET first_name=?,last_name=?,email=?,address=?,city=?,region=?,school=?,phone_number=? ;");
+                    "UPDATE candidate_profile SET first_name=?,last_name=?,email=?,address=?,city=?,region=?,school=?,phone_number=? " +
+                            "WHERE id=?");
             pstmt.setString(1, applicantProfile.getFirstName());
             pstmt.setString(2, applicantProfile.getLastName());
             pstmt.setString(3, applicantProfile.getEmail());
@@ -207,6 +210,7 @@ public class MySqlApplicantDAO implements ApplicantDAO {
             pstmt.setString(6, applicantProfile.getRegion());
             pstmt.setString(7, applicantProfile.getSchool());
             pstmt.setString(8, applicantProfile.getPhoneNumber());
+            pstmt.setLong(9, applicantProfile.getId());
             pstmt.execute();
             conn.commit();
 
