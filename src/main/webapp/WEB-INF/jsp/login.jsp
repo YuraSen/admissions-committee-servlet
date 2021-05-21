@@ -10,7 +10,7 @@
 
 
 <body>
-<jsp:include page="/WEB-INF/jsp/fragments/navbar-log-reg.jsp" />
+<jsp:include page="fragments/navbar-log-reg.jsp" />
 <section>
 
     <br>

@@ -3,6 +3,8 @@ package com.senin.admissions_committee_servlet.entity;
 import java.time.LocalDateTime;
 
 public class AdmissionRequest {
+    private Applicant applicant;
+    private Faculty faculty;
     private Long id;
     private AdmissionRequestStatus admissionRequestStatus;
     private Long applicantId;
@@ -16,6 +18,22 @@ public class AdmissionRequest {
     public static AdmissionRequest createAdmissionRequest() {
         return new AdmissionRequest();
 
+    }
+
+    public Applicant getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(Applicant applicant) {
+        this.applicant = applicant;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 
     public int getSumOfGrades() {

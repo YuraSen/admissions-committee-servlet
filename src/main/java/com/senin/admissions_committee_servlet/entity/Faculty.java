@@ -14,6 +14,18 @@ public class Faculty {
     private boolean admissionOpen;
     private List<AdmissionRequest> admissionRequestList;
 
+    public Long numberOfRequestsNew() {
+        return getAdmissionRequestList().stream()
+                .filter(ar -> ar.getAdmissionRequestStatus().ordinal() == AdmissionRequestStatus.NEW.ordinal())
+                .count();
+    }
+
+    public Long numberOfRequestsRejected() {
+        return getAdmissionRequestList().stream()
+                .filter(ar -> ar.getAdmissionRequestStatus().ordinal() == AdmissionRequestStatus.REJECTED.ordinal())
+                .count();
+    }
+
     public static Faculty createFaculty(String name) {
         Faculty faculty = new Faculty();
         faculty.setName(name);

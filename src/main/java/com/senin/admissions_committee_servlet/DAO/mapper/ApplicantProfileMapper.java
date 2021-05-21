@@ -25,7 +25,7 @@ public class ApplicantProfileMapper implements ObjectMapper<ApplicantProfile> {
     }
 
     @Override
-    public ApplicantProfile makeUnique(Map<Integer, ApplicantProfile> cache, ApplicantProfile teacher) {
+    public ApplicantProfile makeUnique(Map<Long, ApplicantProfile> cache, ApplicantProfile teacher) {
         return null;
     }
 }
