@@ -18,6 +18,6 @@ public interface AdmissionRequestDAO {
 
     List<AdmissionRequest> selectAdmissionRequests() throws SQLException;
 
-    List<AdmissionRequest> selectAdmissionRequestsForCandidateWithId(Long id);
+    List<AdmissionRequest> selectAdmissionRequestsForApplicantWithId(Long id);
 
 }

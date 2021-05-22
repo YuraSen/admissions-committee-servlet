@@ -24,7 +24,7 @@ public class MySqlAdmissionRequestDAO implements AdmissionRequestDAO {
     public int saveAdmissionRequest(AdmissionRequest admissionRequest) {
 
         String sql = "INSERT INTO admission_request " +
-                "(faculty_id,candidate_id,req_subject1_grade,req_subject2_grade,req_subject3_grade,status)" +
+                "(faculty_id,applicant_id,req_subject1_grade,req_subject2_grade,req_subject3_grade,status)" +
                 "Values(?,?,?,?,?,?);";
         try (Connection con = connection;
              PreparedStatement preparedStatement = con.prepareStatement(sql)) {
@@ -43,19 +43,19 @@ public class MySqlAdmissionRequestDAO implements AdmissionRequestDAO {
     }
 
     @Override
-    public List<AdmissionRequest> selectAdmissionRequestsForCandidateWithId(Long id) {
+    public List<AdmissionRequest> selectAdmissionRequestsForApplicantWithId(Long id) {
 
         List<AdmissionRequest> admissionRequestList = new ArrayList<>();
 
         String sql = "SELECT " +
-                "cp.id, cp.address, cp.city, cp.email, cp.first_name, cp.last_name, cp.phone_number, cp.region, cp.school, cp.candidate_id, " +
+                "cp.id, cp.address, cp.city, cp.email, cp.first_name, cp.last_name, cp.phone_number, cp.region, cp.school, cp.applicant_id, " +
                 "f.id, budget_capacity, description, name, req_subject1, req_subject2, req_subject3, total_capacity, admission_open," +
-                "admission_request.id, status, creation_date_time, req_subject1_grade, req_subject2_grade, req_subject3_grade,admission_request.candidate_id,faculty_id," +
-                " c.id,c.username,c.password,c.role,c.candidate_status " +
+                "admission_request.id, status, creation_date_time, req_subject1_grade, req_subject2_grade, req_subject3_grade,admission_request.applicant_id,faculty_id," +
+                " c.id,c.username,c.password,c.role,c.applicant_status " +
                 "FROM admission_request " +
-                "JOIN candidate c on admission_request.candidate_id=c.id " +
-                "JOIN  candidate_profile cp on admission_request.candidate_id = cp.candidate_id " +
-                "JOIN faculty f on admission_request.faculty_id = f.id WHERE admission_request.candidate_id=?;";
+                "JOIN applicant c on admission_request.applicant_id=c.id " +
+                "JOIN  applicant_profile cp on admission_request.applicant_id = cp.applicant_id " +
+                "JOIN faculty f on admission_request.faculty_id = f.id WHERE admission_request.applicant_id=?;";
         try (Connection con = connection;
              PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setLong(1, id);
@@ -63,12 +63,12 @@ public class MySqlAdmissionRequestDAO implements AdmissionRequestDAO {
                 AdmissionRequestMapper admissionRequestMapper = new AdmissionRequestMapper();
                 FacultyMapper facultyMapper = new FacultyMapper();
                 ApplicantMapper applicantMapper = new ApplicantMapper();
-                ApplicantProfileMapper candidateProfileMapper =  new ApplicantProfileMapper();
+                ApplicantProfileMapper applicantProfileMapper =  new ApplicantProfileMapper();
                 while (rs.next()) {
                     AdmissionRequest admissionRequest = admissionRequestMapper.extractFromResultSet(rs);
                     Faculty faculty =  facultyMapper.extractFromResultSet(rs);
                     Applicant applicant = applicantMapper.extractFromResultSet(rs);
-                    ApplicantProfile applicantProfile = candidateProfileMapper.extractFromResultSet(rs);
+                    ApplicantProfile applicantProfile = applicantProfileMapper.extractFromResultSet(rs);
                     applicant.setApplicantProfile(applicantProfile);
                     admissionRequest.setApplicant(applicant);
                     admissionRequest.setFaculty(faculty);

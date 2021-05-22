@@ -18,7 +18,7 @@ public class AdmissionRequestDTO {
     private Integer requiredSubject1Grade;
     private Integer requiredSubject2Grade;
     private Integer requiredSubject3Grade;
-    private Long candidateId;
+    private Long applicantId;
     private  Long facultyId;
 
     public Long getId() {
@@ -61,12 +61,12 @@ public class AdmissionRequestDTO {
         this.creationDateTime = creationDateTime;
     }
 
-    public Long getCandidateId() {
-        return candidateId;
+    public Long getApplicantId() {
+        return applicantId;
     }
 
-    public void setCandidateId(Long candidateId) {
-        this.candidateId = candidateId;
+    public void setApplicantId(Long applicantId) {
+        this.applicantId = applicantId;
     }
 
     public Long getFacultyId() {

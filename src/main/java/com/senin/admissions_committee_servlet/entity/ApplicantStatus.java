@@ -9,7 +9,7 @@ public enum ApplicantStatus {
 
     private static ApplicantStatus[] values = ApplicantStatus.values();
 
-    public static ApplicantStatus getCandidateStatus(int i) {
+    public static ApplicantStatus getApplicantStatus(int i) {
         return values[i];
     }
 }

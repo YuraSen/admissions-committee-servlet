@@ -200,7 +200,7 @@ public class MySqlApplicantDAO implements ApplicantDAO {
             conn.setAutoCommit(false);
             conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             pstmt = conn.prepareStatement(
-                    "UPDATE candidate_profile SET first_name=?,last_name=?,email=?,address=?,city=?,region=?,school=?,phone_number=? " +
+                    "UPDATE applicant_profile SET first_name=?,last_name=?,email=?,address=?,city=?,region=?,school=?,phone_number=? " +
                             "WHERE id=?");
             pstmt.setString(1, applicantProfile.getFirstName());
             pstmt.setString(2, applicantProfile.getLastName());
