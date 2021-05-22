@@ -7,10 +7,6 @@
 <body>
 <jsp:include page="../fragments/navbar.jsp"/>
 <br>
-
-
-
-
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
@@ -36,11 +32,9 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <jsp:useBean id="faculty" type="entity.Faculty" scope="request"/>
+                        <jsp:useBean id="faculty" type="com.senin.admissions_committee_servlet.entity.Faculty" scope="request"/>
                         <c:forEach var="req" items="${faculty.admissionRequestList}">
-
                             <tr>
-
                                 <td>${req.id}</td>
                                 <td>${req.applicant.applicantProfile.firstName} ${req.applicant.applicantProfile.lastName}</td>
                                 <td>${faculty.name}</td>
@@ -63,10 +57,6 @@
         </div>
     </div>
 </div>
-
-
 </body>
-
-
 </body>
 </html>

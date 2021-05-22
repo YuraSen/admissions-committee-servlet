@@ -21,8 +21,6 @@ public interface ApplicantDAO {
 
     void updateApplicantProfile(ApplicantProfile applicantProfile) throws SQLException;
 
-    RowSet selectApplicantRS();
-
     Collection<Applicant> getAllApplicantTO();
 
     Optional<ApplicantProfile> getApplicantProfile(Applicant applicant);

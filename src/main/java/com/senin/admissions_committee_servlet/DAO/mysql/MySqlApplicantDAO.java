@@ -140,10 +140,6 @@ public class MySqlApplicantDAO implements ApplicantDAO {
         return false;
     }
 
-    public RowSet selectApplicantRS() {
-        return null;
-    }
-
     @Override
     public List<Applicant> getAllApplicantTO() {
         List<Applicant> listApplicants = new ArrayList<>();

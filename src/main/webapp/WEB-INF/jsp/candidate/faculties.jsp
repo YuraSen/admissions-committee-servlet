@@ -34,8 +34,7 @@
             </thead>
             <tbody>
             <c:forEach var="faculty" items="${facultiesList}">
-                <jsp:useBean id="faculty" type="entity.Faculty"/>
-
+                <jsp:useBean id="faculty" type="com.senin.admissions_committee_servlet.entity.Faculty"/>
                 <tr>
                     <td>
                         <c:out value="${faculty.name}"/>
@@ -59,9 +58,7 @@
                     </td>
                 </tr>
             </c:forEach>
-            <!-- } -->
             </tbody>
-
         </table>
     </div>
 </div>

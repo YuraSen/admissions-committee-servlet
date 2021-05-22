@@ -5,6 +5,8 @@ import com.senin.admissions_committee_servlet.entity.Faculty;
 import com.senin.admissions_committee_servlet.entity.StatementElement;
 import com.senin.admissions_committee_servlet.exception.StatementCreationException;
 import com.senin.admissions_committee_servlet.web.command.Command;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

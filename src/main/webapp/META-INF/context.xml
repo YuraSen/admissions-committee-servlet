@@ -44,6 +44,6 @@ Data source and connection pool configuration
               driverClassName="com.mysql.cj.jdbc.Driver"
               defaultAutoCommit="true"
               defaultTransactionIsolation="READ_COMMITTED"
-              url="jdbc:mysql://localhost:3306/admissions?serverTimezone=UTC"/>
+              url="jdbc:mysql://localhost:3306/demo-servlet?serverTimezone=UTC"/>
 
 </Context>

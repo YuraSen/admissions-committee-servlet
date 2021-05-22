@@ -11,6 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class MySqlAdmissionRequestDAO implements AdmissionRequestDAO {
 
@@ -96,7 +97,7 @@ public class MySqlAdmissionRequestDAO implements AdmissionRequestDAO {
     public boolean deleteAdmissionRequest(Long id) throws SQLException {
         boolean res = false;
         try (Connection conn = connection;
-             PreparedStatement preparedStatement = conn.prepareStatement("DELETE  FROM admission_request WHERE  id= ?")) {
+             PreparedStatement preparedStatement = conn.prepareStatement("DELETE  FROM admission_request WHERE id = ?")) {
             preparedStatement.setLong(1, id);
             res = preparedStatement.executeUpdate() > 0;
 
@@ -107,10 +108,9 @@ public class MySqlAdmissionRequestDAO implements AdmissionRequestDAO {
     }
 
     @Override
-    public AdmissionRequest findAdmissionRequest(Long id) {
-        return null;
+    public Optional<AdmissionRequest> findAdmissionRequest(Long id) {
+        return Optional.empty();
     }
-
 
     @Override
     public boolean updateAdmissionRequest() {

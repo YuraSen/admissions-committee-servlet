@@ -8,8 +8,6 @@
 <jsp:include page="../fragments/navbar.jsp" />
 <c:choose>
     <c:when test="${requestScope.action=='create'}">
-
-
 <br>
 <main class="registration-form">
     <div class="container">

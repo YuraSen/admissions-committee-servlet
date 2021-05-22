@@ -81,11 +81,6 @@ public class MySqlFacultyDAO implements FacultyDAO {
     }
 
     @Override
-    public RowSet selectFacultyRS() {
-        return null;
-    }
-
-    @Override
     public List<Faculty> getAllFacultiesTO() throws SQLException {
         Map<Long, Faculty> faculties = new HashMap<>();
         try (Connection con = connection;

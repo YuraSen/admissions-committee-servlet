@@ -1,5 +1,6 @@
 package com.senin.admissions_committee_servlet.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Faculty {
@@ -12,7 +13,7 @@ public class Faculty {
     private String requiredSubject2;
     private String requiredSubject3;
     private boolean admissionOpen;
-    private List<AdmissionRequest> admissionRequestList;
+    private List<AdmissionRequest> admissionRequestList = new ArrayList<>();
 
     public Long numberOfRequestsNew() {
         return getAdmissionRequestList().stream()
@@ -26,11 +27,10 @@ public class Faculty {
                 .count();
     }
 
-    public static Faculty createFaculty(String name) {
-        Faculty faculty = new Faculty();
-        faculty.setName(name);
-        return faculty;
-
+    public Long numberOfRequestsApproved() {
+        return getAdmissionRequestList().stream()
+                .filter(ar -> ar.getAdmissionRequestStatus().ordinal() == AdmissionRequestStatus.APPROVED.ordinal())
+                .count();
     }
 
     public Long getId() {

@@ -6,8 +6,6 @@ import com.senin.admissions_committee_servlet.web.command.Command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.senin.admissions_committee_servlet.web.command.Command.daoFactory;
-
 public class CreateNewFacultyCommand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
