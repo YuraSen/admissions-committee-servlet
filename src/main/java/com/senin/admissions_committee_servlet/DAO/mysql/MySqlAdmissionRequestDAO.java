@@ -83,6 +83,16 @@ public class MySqlAdmissionRequestDAO implements AdmissionRequestDAO {
     }
 
     @Override
+    public List<AdmissionRequest> selectAdmissionRequestsForFacultyWithId(Long id) {
+        return null;
+    }
+
+    @Override
+    public boolean changeAdmissionRequestStatus(Long id, AdmissionRequestStatus status) throws SQLException {
+        return false;
+    }
+
+    @Override
     public boolean deleteAdmissionRequest(Long id) throws SQLException {
         boolean res = false;
         try (Connection conn = connection;

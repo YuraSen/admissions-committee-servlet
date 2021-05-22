@@ -1,7 +1,8 @@
-package com.senin.admissions_committee_servlet.web.command;
+package com.senin.admissions_committee_servlet.web.command.applicant;
 
 import com.senin.admissions_committee_servlet.entity.Applicant;
 import com.senin.admissions_committee_servlet.entity.ApplicantProfile;
+import com.senin.admissions_committee_servlet.web.command.Command;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

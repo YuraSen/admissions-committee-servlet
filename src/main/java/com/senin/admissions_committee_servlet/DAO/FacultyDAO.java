@@ -5,19 +5,20 @@ import com.senin.admissions_committee_servlet.entity.Faculty;
 import javax.sql.RowSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 
 public interface FacultyDAO {
 
-    public int createFaculty();
+    int createFaculty();
 
-    public boolean deleteFaculty();
+    boolean deleteFaculty();
 
-    public Faculty findFaculty(Long id);
+    Faculty findFaculty(Long id);
 
-    public boolean updateFaculty();
+    boolean updateFaculty();
 
-    public RowSet selectFacultyRS();
+    public List<Faculty> getAllFacultiesTO()throws SQLException;
 
-    public Collection<Faculty> getAllFacultiesTO()throws SQLException;
+    boolean changeAdmissionOpenStatus(String action, Long facultyId);
 
 }

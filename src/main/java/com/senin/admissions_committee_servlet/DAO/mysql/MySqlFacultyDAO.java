@@ -12,10 +12,7 @@ import com.senin.admissions_committee_servlet.entity.Faculty;
 
 import javax.sql.RowSet;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MySqlFacultyDAO implements FacultyDAO {
     private static Connection connection;
@@ -57,16 +54,19 @@ public class MySqlFacultyDAO implements FacultyDAO {
                 AdmissionRequestMapper admissionRequestMapper = new AdmissionRequestMapper();
                 FacultyMapper facultyMapper = new FacultyMapper();
                 ApplicantMapper applicantMapper = new ApplicantMapper();
-                ApplicantProfileMapper applicantProfileMapper = new ApplicantProfileMapper();
+                ApplicantProfileMapper profileMapper = new ApplicantProfileMapper();
                 while (rs.next()) {
-                    AdmissionRequest admissionRequest = admissionRequestMapper.extractFromResultSet(rs);
-                    Applicant applicant = applicantMapper.extractFromResultSet(rs);
-                    ApplicantProfile applicantProfile = applicantProfileMapper.extractFromResultSet(rs);
-                    applicant.setApplicantProfile(applicantProfile);
-                    admissionRequest.setApplicant(applicant);
+                    Optional<AdmissionRequest> admissionRequest = admissionRequestMapper.extractFromResultSet2(rs);
                     faculty = facultyMapper.extractFromResultSet(rs);
                     facultyUnique = facultyMapper.makeUnique(facultyMap, faculty);
-                    facultyUnique.getAdmissionRequestList().add(admissionRequest);
+                    if (admissionRequest.isPresent()) {
+                        Applicant applicant = applicantMapper.extractFromResultSet(rs);
+                        ApplicantProfile applicantProfile = profileMapper.extractFromResultSet(rs);
+                        applicant.setApplicantProfile(applicantProfile);
+                        admissionRequest.get().setApplicant(applicant);
+                        admissionRequest.get().setFaculty(facultyUnique);
+                        facultyUnique.getAdmissionRequestList().add(admissionRequest.get());
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -86,7 +86,7 @@ public class MySqlFacultyDAO implements FacultyDAO {
     }
 
     @Override
-    public List<Faculty> getAllFacultiesTO() throws SQLException{
+    public List<Faculty> getAllFacultiesTO() throws SQLException {
         Map<Long, Faculty> faculties = new HashMap<>();
         try (Connection con = connection;
              Statement stmt = con.createStatement();
@@ -105,5 +105,26 @@ public class MySqlFacultyDAO implements FacultyDAO {
             throw new SQLException("Cannot get all faculties!", throwables);
         }
         return new ArrayList<Faculty>(faculties.values());
+    }
+
+    @Override
+    public boolean changeAdmissionOpenStatus(String action, Long facultyId) {
+        String sql = " UPDATE  faculty " +
+                "SET admission_open=?" +
+                " WHERE id=?;";
+
+
+        try (Connection con = connection;
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setBoolean(1, !action.equals("block"));
+            pstmt.setLong(2, facultyId);
+
+            return pstmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return false;
     }
 }

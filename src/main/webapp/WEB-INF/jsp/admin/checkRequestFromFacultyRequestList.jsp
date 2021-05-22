@@ -5,7 +5,7 @@
 </head>
 <body>
 <jsp:include page="../fragments/navbar.jsp"/>
-<jsp:useBean id="admissionRequest" type="entity.AdmissionRequest" scope="request"/>
+<jsp:useBean id="admissionRequest" type="com.senin.admissions_committee_servlet.entity.AdmissionRequest" scope="request"/>
 <br>
 <div class="container">
     <div class="row">

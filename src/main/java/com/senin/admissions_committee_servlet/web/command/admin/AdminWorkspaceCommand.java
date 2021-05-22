@@ -1,4 +1,6 @@
-package com.senin.admissions_committee_servlet.web.command;
+package com.senin.admissions_committee_servlet.web.command.admin;
+
+import com.senin.admissions_committee_servlet.web.command.Command;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

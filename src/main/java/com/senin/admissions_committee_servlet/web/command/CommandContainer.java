@@ -1,5 +1,8 @@
 package com.senin.admissions_committee_servlet.web.command;
 
+import com.senin.admissions_committee_servlet.web.command.admin.AdminWorkspaceCommand;
+import com.senin.admissions_committee_servlet.web.command.applicant.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
