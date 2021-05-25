@@ -1,19 +1,22 @@
 package com.senin.demo.controller.command.applicant;
 
+import com.senin.demo.controller.command.Command;
 import com.senin.demo.model.DAO.DAOFactory;
 import com.senin.demo.model.entity.ApplicantProfile;
-import com.senin.demo.controller.command.Command;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class UpdateApplicantProfileCommand implements Command {
     private static final DAOFactory daoFactory = DAOFactory.getDAOFactory(1);
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) {
 
-        ApplicantProfile applicantProfile =  new ApplicantProfile();
+    @Override
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        ApplicantProfile applicantProfile = new ApplicantProfile();
+        applicantProfile.setId(Long.valueOf(request.getParameter("applicantProfileId")));
         applicantProfile.setEmail(request.getParameter("email"));
         applicantProfile.setFirstName(request.getParameter("firstName"));
         applicantProfile.setLastName(request.getParameter("lastName"));
@@ -29,6 +32,8 @@ public class UpdateApplicantProfileCommand implements Command {
             throwable.printStackTrace();
         }
 
-        return "/controller?command=applicantProfile";
+        response.sendRedirect("/controller?command=applicantProfile");
+
+        return "";
     }
 }

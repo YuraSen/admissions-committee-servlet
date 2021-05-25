@@ -2,24 +2,43 @@ package com.senin.demo.controller.command.admin;
 
 import com.senin.demo.model.entity.Faculty;
 import com.senin.demo.controller.command.Command;
+import com.senin.demo.service.FacultyService;
+import com.senin.demo.utils.util.FacultyDTOMapper;
+import com.senin.demo.utils.validation.FacultyValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UpdateFacultyCommand implements Command {
+    FacultyService facultyService;
+
+    public UpdateFacultyCommand(FacultyService facultyService) {
+        this.facultyService = facultyService;
+    }
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
 
-        Faculty faculty = new Faculty();
-        faculty.setId(Long.valueOf(request.getParameter("facultyId")));
-        faculty.setName(request.getParameter("name"));
-        faculty.setDescription(request.getParameter("description"));
-        faculty.setBudgetCapacity(Integer.parseInt(request.getParameter("budgetCapacity")));
-        faculty.setTotalCapacity(Integer.parseInt(request.getParameter("totalCapacity")));
-        faculty.setRequiredSubject1(request.getParameter("requiredSubject1"));
-        faculty.setRequiredSubject2(request.getParameter("requiredSubject2"));
-        faculty.setRequiredSubject3(request.getParameter("requiredSubject3"));
-        daoFactory.getFacultyDAO().updateFaculty(faculty);
+        String lang = (String) request.getSession().getAttribute("lang");
+
+        Map<String, String> facultyParameters = request.getParameterMap().entrySet().stream()
+                .filter(entry -> !("command".equals(entry.getKey())))
+                .collect(Collectors.toMap(Map.Entry::getKey, stringEntry -> request.getParameter(stringEntry.getKey())));
+
+
+        FacultyValidator facultyValidator = new FacultyValidator(lang);
+        Map<String, String> errors = facultyValidator.validateFaculty(facultyParameters);
+        if (!errors.isEmpty()) {
+            facultyParameters.entrySet().stream().forEach(c -> request.setAttribute(c.getKey(), c.getValue()));
+            errors.entrySet().stream().forEach(entity -> request.setAttribute(entity.getKey(), entity.getValue()));
+            return "WEB-INF/jsp/admin/adminEditFaculty.jsp";
+        }
+        FacultyDTOMapper facultyDTOMapper = new FacultyDTOMapper();
+        Faculty faculty = facultyDTOMapper.getFaculty(facultyParameters);
+        faculty.setId(Long.parseLong(facultyParameters.get("facultyId")));
+        facultyService.update(faculty);
 
         return "/controller?command=adminWorkspace";
     }

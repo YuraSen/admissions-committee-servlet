@@ -16,8 +16,7 @@ public class ApplicantProfileEditCommand implements Command {
         HttpSession session = request.getSession();
         Applicant applicant = (Applicant) session.getAttribute("applicant");
 
-        ApplicantProfile applicantProfile =
-                null;
+        ApplicantProfile applicantProfile = null;
         try {
             applicantProfile = daoFactory.getApplicantDAO().getApplicantProfile(applicant)
                     .orElseThrow(()->new Exception("APPLICANT PROFILE"));
