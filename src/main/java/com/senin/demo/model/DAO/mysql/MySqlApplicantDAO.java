@@ -15,8 +15,6 @@ import java.util.Optional;
 
 
 public class MySqlApplicantDAO implements ApplicantDAO {
-
-    private static MySqlApplicantDAO instance;
     private static Connection connection;
 
     public MySqlApplicantDAO(Connection connection) {
@@ -34,7 +32,7 @@ public class MySqlApplicantDAO implements ApplicantDAO {
             conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             pstmt = conn.prepareStatement(
-                    "INSERT INTO applicant (username,password,role,status) Values(?,?,?,?);", Statement.RETURN_GENERATED_KEYS);
+                    "INSERT INTO applicant (username,password,role,applicant_status) Values(?,?,?,?);", Statement.RETURN_GENERATED_KEYS);
 
             pstmt.setString(1, applicant.getUsername());
             pstmt.setString(2, applicant.getPassword());
@@ -79,6 +77,32 @@ public class MySqlApplicantDAO implements ApplicantDAO {
 
     }
 
+    @Override
+    public Optional<Applicant> findApplicantById(Long id) throws SQLException {
+        Optional<Applicant> applicant = Optional.empty();
+        try (Connection con = connection;
+             PreparedStatement pstmt = con.prepareStatement("SELECT c.id, applicant_status, password, role, username," +
+                     " cp.id, address, city, email, first_name, last_name, phone_number, region, school, applicant_id " +
+                     "FROM applicant c  left join applicant_profile cp on c.id = cp.applicant_id WHERE c.id =?")) {
+            pstmt.setLong(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                ApplicantMapper applicantMapper = new ApplicantMapper();
+                ApplicantProfileMapper applicantProfileMapper = new ApplicantProfileMapper();
+                while (rs.next()) {
+                    applicant = applicantMapper.extractFromResultSetOpt(rs);
+                    ApplicantProfile applicantProfile = applicantProfileMapper.extractFromResultSet(rs);
+                    applicant.ifPresent(c -> c.setApplicantProfile(applicantProfile));
+                }
+
+            } catch (SQLException ex) {
+                throw new SQLException("Cannot get  applicant with id: !" + id, ex);
+            }
+        } catch (SQLException exp) {
+            throw new SQLException("Cannot get  applicant with id: !" + id, exp);
+        }
+        return applicant;
+    }
+
     private Long getGeneratedKey(PreparedStatement pstmt) throws SQLException {
         ResultSet rs = null;
         try {
@@ -95,66 +119,76 @@ public class MySqlApplicantDAO implements ApplicantDAO {
         return -1L;
     }
 
-    @Override
-    public boolean deleteApplicant() {
-        return false;
-    }
-
     public Applicant findApplicantById(int id) {
         return null;
     }
 
     @Override
-    public Applicant findApplicantByUsername(String username) {
-        Applicant applicant = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        Connection con = null;
-        try {
-            con = connection;
-            pstmt = con.prepareStatement(Constants.SQL_FIND_APPLICANT_BY_USERNAME);
+    public Optional<Applicant> findApplicantByUsername(String username) throws SQLException {
+        Optional<Applicant> applicant = Optional.empty();
+        try (Connection con = connection;
+             PreparedStatement pstmt = con.prepareStatement(
+                     "SELECT c.id, c.applicant_status, c.password, c.role, c.username " +
+                             "FROM  applicant c " +
+                             " WHERE username = ?;")) {
             pstmt.setString(1, username);
-            rs = pstmt.executeQuery();
-            ApplicantMapper applicantMapper = new ApplicantMapper();
-            if (rs.next())
-                applicant = applicantMapper.extractFromResultSet(rs);
-            rs.close();
-            pstmt.close();
-        } catch (SQLException ex) {
 
-            ex.printStackTrace();
-        } finally {
-            try {
-                rs.close();
+            try (ResultSet rs = pstmt.executeQuery()) {
+                ApplicantMapper applicantMapper = new ApplicantMapper();
+                if (rs.next())
+                    applicant = Optional.ofNullable(applicantMapper.extractFromResultSet(rs));
 
-                pstmt.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+            } catch (SQLException ex) {
+                throw new SQLException("Cannot find  applicant with username: !" + username, ex);
             }
+        } catch (SQLException exp) {
+            throw new SQLException("Cannot find  applicant with username: !" + username, exp);
         }
         return applicant;
     }
 
-    public boolean updateApplicant() {
-        return false;
+    @Override
+    public boolean updateApplicant(String role, String applicantStatus, Long id) throws SQLException {
+        String sql = " UPDATE  applicant " +
+                "SET role=?,applicant_status=? " +
+                " WHERE id=?;";
+
+
+        try (Connection con = connection;
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, role);
+            pstmt.setString(2, applicantStatus);
+            pstmt.setLong(3, id);
+
+            return pstmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new SQLException("Cannot update  applicant with id: " + id, e);
+        }
     }
 
     @Override
-    public List<Applicant> getAllApplicantTO() {
+    public List<Applicant> getAllApplicantTO() throws SQLException {
         List<Applicant> listApplicants = new ArrayList<>();
 
         try (Connection con = connection;
              Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(Constants.SQL_FIND_ALL_APPLICANTS)) {
+             ResultSet rs = stmt.executeQuery("SELECT c.id, applicant_status, password, role, username," +
+                     " cp.id, address, city, email, first_name, last_name, phone_number, region, school, applicant_id " +
+                     "FROM applicant c left join applicant_profile cp on c.id = cp.applicant_id")) {
             ApplicantMapper applicantMapper = new ApplicantMapper();
+            ApplicantProfileMapper applicantProfileMapper = new ApplicantProfileMapper();
             while (rs.next()) {
-                listApplicants.add(applicantMapper.extractFromResultSet(rs));
+                Applicant applicant = applicantMapper.extractFromResultSet(rs);
+                ApplicantProfile applicantProfile = applicantProfileMapper.extractFromResultSet(rs);
+                applicant.setApplicantProfile(applicantProfile);
+                listApplicants.add(applicant);
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new SQLException("Cannot get all applicants!", ex);
+
         }
         return listApplicants;
-
     }
 
     private Applicant mapApplicant(ResultSet rs) throws SQLException {
@@ -168,18 +202,19 @@ public class MySqlApplicantDAO implements ApplicantDAO {
     }
 
     @Override
-    public Optional<ApplicantProfile> getApplicantProfile(Applicant applicant) {
+    public Optional<ApplicantProfile> getApplicantProfile(Applicant applicant) throws SQLException {
         Optional<ApplicantProfile> result = Optional.empty();
-        try (PreparedStatement ps = connection.prepareCall("SELECT * From applicant_profile Where applicant_id=?")) {
+        try (Connection con = connection;
+             PreparedStatement ps = con.prepareCall("SELECT cp.id, address, city, email, first_name, last_name, phone_number, region, school, applicant_id From applicant_profile cp Where applicant_id=?")) {
             ps.setLong(1, applicant.getId());
-            ResultSet rs;
-            rs = ps.executeQuery();
-            ApplicantProfileMapper mapper = new ApplicantProfileMapper();
-            if (rs.next()) {
-                result = Optional.of(mapper.extractFromResultSet(rs));
+            try (ResultSet rs = ps.executeQuery()) {
+                ApplicantProfileMapper mapper = new ApplicantProfileMapper();
+                if (rs.next()) {
+                    result = Optional.of(mapper.extractFromResultSet(rs));
+                }
             }
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        } catch (SQLException ex) {
+            throw new SQLException(ex);
         }
 
         return result;
@@ -189,7 +224,6 @@ public class MySqlApplicantDAO implements ApplicantDAO {
     public void updateApplicantProfile(ApplicantProfile applicantProfile) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        Long applicantId = null;
         try {
             conn = connection;
             conn.setAutoCommit(false);
@@ -225,5 +259,35 @@ public class MySqlApplicantDAO implements ApplicantDAO {
 
             }
         }
+    }
+
+    @Override
+    public void create(Applicant entity) throws SQLException {
+
+    }
+
+    @Override
+    public Applicant findById(Long id) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public List<Applicant> findAll() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public void update(Applicant entity) throws SQLException {
+
+    }
+
+    @Override
+    public void delete(Long id) throws SQLException {
+
+    }
+
+    @Override
+    public void close() throws SQLException {
+
     }
 }

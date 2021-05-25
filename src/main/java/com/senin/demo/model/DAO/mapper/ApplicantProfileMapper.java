@@ -25,7 +25,8 @@ public class ApplicantProfileMapper implements ObjectMapper<ApplicantProfile> {
     }
 
     @Override
-    public ApplicantProfile makeUnique(Map<Long, ApplicantProfile> cache, ApplicantProfile teacher) {
-        return null;
+    public ApplicantProfile makeUnique(Map<Long, ApplicantProfile> cache, ApplicantProfile entity) {
+        cache.putIfAbsent(entity.getId(), entity);
+        return cache.get(entity.getId());
     }
 }

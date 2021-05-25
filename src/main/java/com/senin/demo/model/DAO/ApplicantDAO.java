@@ -4,23 +4,21 @@ import com.senin.demo.model.entity.Applicant;
 import com.senin.demo.model.entity.ApplicantProfile;
 
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
-public interface ApplicantDAO {
+public interface ApplicantDAO extends GenericDao<Applicant> {
     void insertApplicant(Applicant applicant, ApplicantProfile applicantProfile) throws SQLException;
 
-    boolean deleteApplicant();
+    Optional<Applicant> findApplicantById(Long id) throws SQLException;
 
-    Applicant findApplicantById(int id);
+    Optional<Applicant> findApplicantByUsername(String username) throws SQLException;
 
-    Applicant findApplicantByUsername(String username);
-
-    boolean updateApplicant();
+    boolean updateApplicant(String role, String applicantStatus, Long id) throws SQLException;
 
     void updateApplicantProfile(ApplicantProfile applicantProfile) throws SQLException;
 
-    Collection<Applicant> getAllApplicantTO();
+    List<Applicant> getAllApplicantTO()throws SQLException;
 
-    Optional<ApplicantProfile> getApplicantProfile(Applicant applicant);
+    Optional<ApplicantProfile> getApplicantProfile(Applicant applicant) throws SQLException;
 }

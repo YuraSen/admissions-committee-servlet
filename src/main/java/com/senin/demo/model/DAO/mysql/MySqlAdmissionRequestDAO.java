@@ -2,8 +2,8 @@ package com.senin.demo.model.DAO.mysql;
 
 import com.senin.demo.model.DAO.AdmissionRequestDAO;
 import com.senin.demo.model.DAO.mapper.AdmissionRequestMapper;
-import com.senin.demo.model.DAO.mapper.ApplicantProfileMapper;
 import com.senin.demo.model.DAO.mapper.ApplicantMapper;
+import com.senin.demo.model.DAO.mapper.ApplicantProfileMapper;
 import com.senin.demo.model.DAO.mapper.FacultyMapper;
 import com.senin.demo.model.entity.*;
 
@@ -63,10 +63,10 @@ public class MySqlAdmissionRequestDAO implements AdmissionRequestDAO {
                 AdmissionRequestMapper admissionRequestMapper = new AdmissionRequestMapper();
                 FacultyMapper facultyMapper = new FacultyMapper();
                 ApplicantMapper applicantMapper = new ApplicantMapper();
-                ApplicantProfileMapper applicantProfileMapper =  new ApplicantProfileMapper();
+                ApplicantProfileMapper applicantProfileMapper = new ApplicantProfileMapper();
                 while (rs.next()) {
                     AdmissionRequest admissionRequest = admissionRequestMapper.extractFromResultSet(rs);
-                    Faculty faculty =  facultyMapper.extractFromResultSet(rs);
+                    Faculty faculty = facultyMapper.extractFromResultSet(rs);
                     Applicant applicant = applicantMapper.extractFromResultSet(rs);
                     ApplicantProfile applicantProfile = applicantProfileMapper.extractFromResultSet(rs);
                     applicant.setApplicantProfile(applicantProfile);
@@ -83,13 +83,18 @@ public class MySqlAdmissionRequestDAO implements AdmissionRequestDAO {
     }
 
     @Override
-    public List<AdmissionRequest> selectAdmissionRequestsForFacultyWithId(Long id) {
-        return null;
-    }
-
-    @Override
     public boolean changeAdmissionRequestStatus(Long id, AdmissionRequestStatus status) throws SQLException {
-        return false;
+        boolean res = false;
+        try (Connection conn = connection;
+             PreparedStatement pstmt = conn.prepareStatement("UPDATE  admission_request SET admission_request.status=? WHERE  id= ?")) {
+            pstmt.setInt(1, status.ordinal());
+            pstmt.setLong(2, id);
+            res = pstmt.executeUpdate() > 0;
+
+        } catch (SQLException ex) {
+            throw new SQLException("Cannot delete a admission request with id:" + id, ex);
+        }
+        return res;
     }
 
     @Override
@@ -107,13 +112,41 @@ public class MySqlAdmissionRequestDAO implements AdmissionRequestDAO {
     }
 
     @Override
-    public Optional<AdmissionRequest> findAdmissionRequest(Long id) {
-        return Optional.empty();
-    }
+    public Optional<AdmissionRequest> findAdmissionRequest(Long id) throws SQLException {
+        String sql = "SELECT cp.id, cp.address, cp.city, cp.email, cp.first_name, cp.last_name, cp.phone_number, cp.region, cp.school, cp.applicant_id, " +
+                "                f.id, budget_capacity, description_en, name_en, name_uk,description_uk, req_subject1_en,req_subject1_uk, req_subject2_en,req_subject2_uk, req_subject3_en,req_subject3_uk, total_capacity, admission_open, " +
+                "                admission_request.id, admission_request.status, creation_date_time, req_subject1_grade, req_subject2_grade, req_subject3_grade,admission_request.applicant_id,faculty_id, " +
+                "                 c.id,c.username,c.password,c.role,c.applicant_status " +
+                "                FROM admission_request  " +
+                "                Left JOIN applicant c on admission_request.applicant_id=c.id " +
+                "                Left JOIN  applicant_profile cp on admission_request.applicant_id = cp.applicant_id " +
+                "                Left JOIN faculty f on admission_request.faculty_id = f.id WHERE admission_request.id=?";
+        try (Connection conn = connection;
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                AdmissionRequestMapper admissionRequestMapper = new AdmissionRequestMapper();
+                FacultyMapper facultyMapper = new FacultyMapper();
+                ApplicantMapper applicantMapper = new ApplicantMapper();
+                ApplicantProfileMapper applicantProfileMapper = new ApplicantProfileMapper();
+                while (rs.next()) {
+                    Optional<AdmissionRequest> admissionRequest = admissionRequestMapper.extractFromResultSet2(rs);
+                    Faculty faculty = facultyMapper.extractFromResultSet(rs);
+                    Applicant applicant = applicantMapper.extractFromResultSet(rs);
+                    ApplicantProfile applicantProfile = applicantProfileMapper.extractFromResultSet(rs);
+                    applicant.setApplicantProfile(applicantProfile);
+                    admissionRequest.ifPresent(x -> {
+                        x.setApplicant(applicant);
+                        x.setFaculty(faculty);
 
-    @Override
-    public boolean updateAdmissionRequest() {
-        return false;
+                    });
+                    return admissionRequest;
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Cannot find a admission request with id: " + id, e);
+        }
+        return Optional.empty();
     }
 
 
@@ -134,5 +167,35 @@ public class MySqlAdmissionRequestDAO implements AdmissionRequestDAO {
         }
 
         return admissionRequests;
+    }
+
+    @Override
+    public void create(AdmissionRequest entity) throws SQLException {
+
+    }
+
+    @Override
+    public AdmissionRequest findById(Long id) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public List<AdmissionRequest> findAll() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public void update(AdmissionRequest entity) throws SQLException {
+
+    }
+
+    @Override
+    public void delete(Long id) throws SQLException {
+
+    }
+
+    @Override
+    public void close() throws SQLException {
+
     }
 }
