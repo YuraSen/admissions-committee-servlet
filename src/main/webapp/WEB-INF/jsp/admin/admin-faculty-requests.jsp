@@ -32,7 +32,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <jsp:useBean id="faculty" type="com.senin.admissions_committee_servlet.entity.Faculty" scope="request"/>
+                        <jsp:useBean id="faculty" type="com.senin.demo.model.entity.Faculty" scope="request"/>
                         <c:forEach var="req" items="${faculty.admissionRequestList}">
                             <tr>
                                 <td>${req.id}</td>

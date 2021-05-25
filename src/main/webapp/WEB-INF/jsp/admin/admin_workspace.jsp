@@ -112,7 +112,7 @@
                         <tbody>
 
                         <c:forEach var="faculty" items="${facultiesList}">
-                            <jsp:useBean id="faculty" type="com.senin.admissions_committee_servlet.entity.Faculty"/>
+                            <jsp:useBean id="faculty" type="com.senin.demo.model.entity.Faculty"/>
                             <tr>
                                 <td>${faculty.name}</td>
                                 <td>${faculty.numberOfRequestsNew()}</td>

@@ -7,7 +7,7 @@
   <display-name>Archetype Created Web Application</display-name>
   <servlet>
     <servlet-name>ControllerServlet</servlet-name>
-    <servlet-class>com.senin.admissions_committee_servlet.web.ControllerServlet</servlet-class>
+    <servlet-class>com.senin.demo.controller.ControllerServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ControllerServlet</servlet-name>
