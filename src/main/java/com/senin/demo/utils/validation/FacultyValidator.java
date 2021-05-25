@@ -1,8 +1,7 @@
-package utils.validation;
+package com.senin.demo.utils.validation;
 
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class FacultyValidator {
@@ -17,10 +16,7 @@ public class FacultyValidator {
 
     FacultyCapacityValidator facultyCapacityValidator = new FacultyCapacityValidator();
     FieldValidator fieldValidator = new FieldValidator();
-//    (String nameEn, String nameUk, String descriptionEn, String descriptionUk,
-//    String budgetCapacity, String totalCapacity, String requiredSubject1En,
-//    String requiredSubject1Uk, String requiredSubject2En, String requiredSubject2Uk,
-//    String requiredSubject3En, String requiredSubject3Uk
+
 
 
     public Map<String, String> validateFaculty(Map<String,String> parameters) {

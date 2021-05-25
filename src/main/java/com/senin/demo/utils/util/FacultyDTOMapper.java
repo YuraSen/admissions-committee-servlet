@@ -1,13 +1,14 @@
-package utils.util;
+package com.senin.demo.utils.util;
 
-import model.entity.Faculty;
 
-import javax.servlet.http.HttpServletRequest;
+
+import com.senin.demo.model.entity.Faculty;
+
 import java.util.Map;
 
 public class FacultyDTOMapper {
 
-    public  Faculty getFaculty(Map<String, String> facultyParameters) {
+    public Faculty getFaculty(Map<String, String> facultyParameters) {
         Faculty faculty = new Faculty();
         faculty.setNameEn(facultyParameters.get("nameEn"));
         faculty.setNameUk(facultyParameters.get("nameUk"));

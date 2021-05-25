@@ -1,14 +1,14 @@
-package service;
+package com.senin.demo.service;
 
-import exception.DbProcessingException;
-import model.DAO.DAOFactory;
-import model.DAO.FacultyDAO;
-import model.dto.FacultyListDTO;
-import model.entity.Faculty;
-
+import com.senin.demo.exception.DbProcessingException;
+import com.senin.demo.model.DAO.DAOFactory;
+import com.senin.demo.model.DAO.FacultyDAO;
+import com.senin.demo.model.dto.FacultyListDTO;
+import com.senin.demo.model.entity.Faculty;
 
 import java.sql.SQLException;
 import java.util.List;
+
 
 public class FacultyService {
     DAOFactory daoFactory = DAOFactory.getDAOFactory(1);
@@ -63,10 +63,4 @@ public class FacultyService {
             throw new DbProcessingException(e.getMessage());
         }
     }
-
-
-    FacultyListDTO findAllSorted(String name, String direction, int page, int itemsPerPage) {
-        return null;
-    }
-
 }

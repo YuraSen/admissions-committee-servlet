@@ -1,4 +1,4 @@
-package utils.util;
+package com.senin.demo.utils.util;
 
 
 import java.time.LocalDateTime;

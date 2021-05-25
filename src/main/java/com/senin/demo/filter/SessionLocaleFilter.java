@@ -1,4 +1,4 @@
-package filter;
+package com.senin.demo.filter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

@@ -1,6 +1,7 @@
-package listener;
+package com.senin.demo.listener;
 
-import model.entity.Applicant;
+
+import com.senin.demo.model.entity.Applicant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,7 @@
-package filter;
+package com.senin.demo.filter;
 
-import model.entity.Role;
+
+import com.senin.demo.model.entity.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,6 @@ public class CommandAccessFilter implements Filter {
     private static List<String> outOfControl = new ArrayList<>();
 
     public void destroy() {
-        // do nothing
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -55,34 +55,22 @@ public class CommandAccessFilter implements Filter {
         if (userRole == null)
             return false;
 
-        return accessMap.get(userRole).contains(commandName)
-                || commons.contains(commandName);
+        return accessMap.get(userRole).contains(commandName)|| commons.contains(commandName);
     }
 
     public void init(FilterConfig fConfig) throws ServletException {
         LOG.debug("Filter initialization starts");
 
-        // roles
         accessMap.put(Role.ADMIN, asList(fConfig.getInitParameter("admin")));
         accessMap.put(Role.USER, asList(fConfig.getInitParameter("user")));
 
-        // commons
         commons = asList(fConfig.getInitParameter("common"));
 
-
-        // out of control
         outOfControl = asList(fConfig.getInitParameter("out-of-control"));
 
         LOG.debug("Filter initialization finished");
     }
 
-    /**
-     * Extracts parameter values from string.
-     *
-     * @param str
-     *            parameter values string.
-     * @return list of parameter values.
-     */
     private List<String> asList(String str) {
         List<String> list = new ArrayList<>();
         StringTokenizer st = new StringTokenizer(str);

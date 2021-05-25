@@ -1,16 +1,18 @@
-package service;
+package com.senin.demo.service;
 
-import exception.CanNotFindRequestById;
-import exception.DbProcessingException;
-import model.DAO.DAOFactory;
-import model.entity.AdmissionRequest;
-import model.entity.AdmissionRequestStatus;
-import model.entity.Faculty;
-import model.entity.StatementElement;
+import com.senin.demo.exception.CanNotFindRequestById;
+import com.senin.demo.exception.DbProcessingException;
+import com.senin.demo.model.DAO.DAOFactory;
+import com.senin.demo.model.entity.AdmissionRequest;
+import com.senin.demo.model.entity.AdmissionRequestStatus;
+import com.senin.demo.model.entity.Faculty;
+import com.senin.demo.model.entity.StatementElement;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;

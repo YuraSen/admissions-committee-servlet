@@ -44,7 +44,7 @@ public class MySqlFacultyDAO implements FacultyDAO {
     }
 
     @Override
-    public FacultyListDTO findAllSorted(String name, String direction, int page, int itemsPerPage) throws SQLException {
+    public FacultyListDTO findAllSorted(String name_en, String direction, int page, int itemsPerPage) throws SQLException {
         List<Faculty> faculties = new ArrayList<>();
         int count = 0;
         int fromItem = (page - 1) * itemsPerPage;

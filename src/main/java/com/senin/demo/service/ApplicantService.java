@@ -1,9 +1,9 @@
-package service;
+package com.senin.demo.service;
 
-import exception.ApplicantNotFoundException;
-import exception.DbProcessingException;
-import model.DAO.DAOFactory;
-import model.entity.Applicant;
+import com.senin.demo.exception.ApplicantNotFoundException;
+import com.senin.demo.exception.DbProcessingException;
+import com.senin.demo.model.DAO.DAOFactory;
+import com.senin.demo.model.entity.Applicant;
 
 import java.sql.SQLException;
 import java.util.List;
