@@ -1,17 +1,23 @@
 package com.senin.demo.controller.command.admin;
 
-import com.senin.demo.model.entity.Faculty;
 import com.senin.demo.controller.command.Command;
+import com.senin.demo.exception.DbProcessingException;
+import com.senin.demo.model.entity.Faculty;
 import com.senin.demo.service.FacultyService;
 import com.senin.demo.utils.util.FacultyDTOMapper;
 import com.senin.demo.utils.validation.FacultyValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class UpdateFacultyCommand implements Command {
+    static final Logger LOG = LoggerFactory.getLogger(GetStatementOfFacultyCommand.class);
+
     FacultyService facultyService;
 
     public UpdateFacultyCommand(FacultyService facultyService) {
@@ -38,8 +44,21 @@ public class UpdateFacultyCommand implements Command {
         FacultyDTOMapper facultyDTOMapper = new FacultyDTOMapper();
         Faculty faculty = facultyDTOMapper.getFaculty(facultyParameters);
         faculty.setId(Long.parseLong(facultyParameters.get("facultyId")));
-        facultyService.update(faculty);
 
-        return "/controller?command=adminWorkspace";
+        try {
+            facultyService.update(faculty);
+        } catch (DbProcessingException e) {
+            LOG.error("Error occurred while updating faculty : {}", e.getMessage());
+            request.setAttribute("errorMessage", e.getMessage());
+            return "/WEB-INF/jsp/errorPage.jsp";
+        }
+        try {
+            response.sendRedirect("/controller?command=adminWorkspace");
+        } catch (IOException e) {
+            request.setAttribute("errorMessage", e.getMessage());
+            return "/WEB-INF/jsp/errorPage.jsp";
+        }
+
+        return "";
     }
 }

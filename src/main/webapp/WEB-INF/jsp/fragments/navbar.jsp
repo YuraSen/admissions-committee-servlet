@@ -1,22 +1,36 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8" %>
+<%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+
+<%@ page session="true" %>
+
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="resources"/>
+
+<html lang="${sessionScope.lang}">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <c:choose>
         <c:when test="${sessionScope.applicant.role=='USER'}">
-            <a class="navbar-brand" href="/controller?command=facultiesList">Admission Board App</a>
+            <a class="navbar-brand" href="/controller?command=facultiesList"><fmt:message
+                    key="navbar.Admission_Board_App"/></a>
         </c:when>
         <c:otherwise>
-            <a class="navbar-brand" href="/">Admission Board App</a>
+            <a class="navbar-brand" href="/controller?command=adminWorkspace"><fmt:message
+                    key="navbar.Admission_Board_App"/></a>
         </c:otherwise>
     </c:choose>
 
@@ -30,30 +44,35 @@
             <li class="nav-item dropdown">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                                            data-target="#navbarDropdown">Change Language
+                                            data-target="#navbarDropdown"><fmt:message key="navbar.Change_Language"/>
                         <b class="caret"></b></a>
                         <div class="dropdown-menu dropdown-menu-right" id="navbarDropdown">
-                            <a class="dropdown-item" href="/controller?lang=en">
-                                English</a>
-                            <a class="dropdown-item" href="/controller?lang=uk">
-                                Ukrainian</a>
+                            <a class="dropdown-item" href="?sessionLocale=en">
+                                <fmt:message key="navbar.Ukrainian"/></a>
+                            <a class="dropdown-item" href="?sessionLocale=uk">
+                                <fmt:message key="navbar.Ukrainian"/></a>
                         </div>
 
                     </li>
                 </ul>
             </li>
 
+
             <c:choose>
             <c:when test="${sessionScope.applicant!=null}">
             <div class="nav-item dropdown ">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown ml-auto"><a href="" class="dropdown-toggle" data-target="#navbarDropdownPr"
-                                                    data-toggle="dropdown">Account: ${sessionScope.applicant.username}
+                                                    data-toggle="dropdown"><fmt:message
+                            key="navbar.Account"/> ${sessionScope.applicant.username}
                         <b class="caret"></b></a>
                         <div class="dropdown-menu dropdown-menu-right" id="navbarDropdownPr">
-                            <a class="dropdown-item" href="controller?command=applicantProfile" >my profile</a>
-                            <a class="dropdown-item" href="controller?command=applicantRequests" >my requests</a>
-                            <a class="dropdown-item" href="controller?command=logout" >logout</a>
+                            <a class="dropdown-item" href="controller?command=applicantProfile"><fmt:message
+                                    key="navbar.my_profile"/></a>
+                            <a class="dropdown-item" href="controller?command=getApplicantRequestsList"><fmt:message
+                                    key="navbar.my_requests"/></a>
+                            <a class="dropdown-item" href="controller?command=logout"><fmt:message
+                                    key="navbar.logout"/></a>
                         </div>
 
                         </form>
@@ -67,14 +86,14 @@
 
                 <form class="form-inline my-2 mr-2 my-lg-0">
                     <a class="btn btn-primary my-2 my-sm-0" href="/controller?command=loginForm" role="button">
-                        login</a>
+                        <fmt:message key="navbar.login"/></a>
                 </form>
             </div>
             <div>
 
                 <form class="form-inline my-2 my-lg-0">
                     <a class="btn btn-primary my-2 my-sm-0" href="/controller?command=registrationForm" role="button">
-                        registration</a>
+                        <fmt:message key="navbar.registration"/></a>
                 </form>
 
             </div>

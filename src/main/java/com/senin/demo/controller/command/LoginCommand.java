@@ -1,11 +1,12 @@
 package com.senin.demo.controller.command;
 
+import com.senin.demo.exception.ApplicantNotFoundException;
 import com.senin.demo.listener.SessionListener;
 import com.senin.demo.model.entity.Applicant;
 import com.senin.demo.model.entity.ApplicantProfile;
 import com.senin.demo.model.entity.ApplicantStatus;
 import com.senin.demo.model.entity.Role;
-
+import com.senin.demo.service.ApplicantService;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,14 +15,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Objects;
 
 public class LoginCommand implements Command {
     private static final Logger LOG = LoggerFactory.getLogger(LoginCommand.class);
+    private final ApplicantService applicantService;
+
+    public LoginCommand(ApplicantService applicantService) {
+        this.applicantService = applicantService;
+    }
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+    public String execute(HttpServletRequest request, HttpServletResponse response) {
 
         HttpSession session = request.getSession();
         String lang = (String) session.getAttribute("lang");
@@ -41,17 +46,20 @@ public class LoginCommand implements Command {
             return forward;
         }
 
-        Applicant applicant = null;
+        Applicant applicant;
         try {
-            applicant = daoFactory.getApplicantDAO().findApplicantByUsername(username).orElseThrow(Exception::new);
+            applicant = applicantService.findApplicantByUsername(username)
+                    .orElseThrow(() -> new ApplicantNotFoundException("Applicant not found!"));
         } catch (Exception e) {
             errorMessage = "Applicant not found!";
             request.setAttribute("errorMessage", errorMessage);
             return forward;
         }
-        ApplicantProfile applicantProfile = null;
+        ApplicantProfile applicantProfile;
         try {
-            applicantProfile = daoFactory.getApplicantDAO().getApplicantProfile(applicant).orElseThrow(Exception::new);
+            applicantProfile = applicantService.getApplicantProfile(applicant)
+                    .orElseThrow(() -> new ApplicantNotFoundException("Applicant profile not found!"));
+
         } catch (Exception e) {
             errorMessage = "Applicant Profile not found";
             request.setAttribute("errorMessage", errorMessage);

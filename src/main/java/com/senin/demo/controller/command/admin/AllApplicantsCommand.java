@@ -25,12 +25,12 @@ public class AllApplicantsCommand implements Command {
         try {
             applicantList = applicantService.findAll();
         } catch (DbProcessingException e) {
-            LOG.error("Error occurred while getting applicant list: {}",e.getMessage());
+            LOG.error("Error occurred while getting applicant list: {}", e.getMessage());
             request.setAttribute("errorMessage", e.getMessage());
             return "/WEB-INF/jsp/errorPage.jsp";
         }
         request.setAttribute("applicantList", applicantList);
 
-        return "/WEB-INF/jsp/applicant.jsp";
+        return "/WEB-INF/jsp/admin/adminAllCandidatesList.jsp";
     }
 }

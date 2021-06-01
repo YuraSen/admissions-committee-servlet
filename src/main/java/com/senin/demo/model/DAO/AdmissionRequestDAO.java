@@ -13,12 +13,10 @@ public interface AdmissionRequestDAO extends GenericDao<AdmissionRequest>{
 
     boolean deleteAdmissionRequest(Long id) throws SQLException;
 
-    Optional<AdmissionRequest> findAdmissionRequest(Long id)throws SQLException;
-
     List<AdmissionRequest> selectAdmissionRequests() throws SQLException;
 
-    List<AdmissionRequest> selectAdmissionRequestsForApplicantWithId(Long id);
-
     boolean changeAdmissionRequestStatus(Long id, AdmissionRequestStatus status) throws SQLException;
+
+    List<AdmissionRequest> selectAdmissionRequestsForApplicantWithId(Long id) throws SQLException;
 
 }

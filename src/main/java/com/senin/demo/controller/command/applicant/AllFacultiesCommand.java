@@ -1,14 +1,26 @@
 package com.senin.demo.controller.command.applicant;
 
 import com.senin.demo.controller.command.Command;
+import com.senin.demo.exception.DbProcessingException;
 import com.senin.demo.model.dto.FacultyListDTO;
 import com.senin.demo.model.entity.Faculty;
+import com.senin.demo.service.FacultyService;
+import com.senin.demo.utils.util.FacultyPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.List;
 
 public class AllFacultiesCommand implements Command {
+    static final Logger LOG = LoggerFactory.getLogger(AllFacultiesCommand.class);
+    private final FacultyService facultyService;
+
+    public AllFacultiesCommand(FacultyService facultyService) {
+        this.facultyService = facultyService;
+    }
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
@@ -38,13 +50,15 @@ public class AllFacultiesCommand implements Command {
         }
 
 
-        FacultyListDTO facultyListDTO = null;
+        FacultyPage facultyPage = null;
         try {
-            facultyListDTO = daoFactory.getFacultyDAO().findAllSorted(sortBy, sortDir, currentPage, itemsPerPage);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            facultyPage = facultyService.findAllSorted(sortBy, sortDir, currentPage, itemsPerPage);
+        } catch (DbProcessingException e) {
+            LOG.error("Error occurred while updating faculty : {}", e.getMessage());
+            request.setAttribute("errorMessage", e.getMessage());
+            return "/WEB-INF/jsp/errorPage.jsp";
         }
-        int totalFaculties = facultyListDTO.getCount();
+        int totalFaculties = facultyPage.getCount();
 
         int totalPages = 0;
         if (totalFaculties % itemsPerPage == 0) {
@@ -55,7 +69,7 @@ public class AllFacultiesCommand implements Command {
 
         int[] itemsPerPageArray = {5, 10, 15};
 
-        request.setAttribute("facultiesList", facultyListDTO.getFacultyList());
+        request.setAttribute("facultiesList", facultyPage.getFacultyList());
         request.setAttribute("noOfPages", totalPages);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("itemsPerPage", itemsPerPage);

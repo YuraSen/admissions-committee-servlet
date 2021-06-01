@@ -2,6 +2,7 @@ package com.senin.demo.service;
 
 import com.senin.demo.exception.CanNotFindRequestById;
 import com.senin.demo.exception.DbProcessingException;
+import com.senin.demo.model.DAO.AdmissionRequestDAO;
 import com.senin.demo.model.DAO.DAOFactory;
 import com.senin.demo.model.entity.AdmissionRequest;
 import com.senin.demo.model.entity.AdmissionRequestStatus;
@@ -26,17 +27,55 @@ public class AdmissionRequestService {
 
 
     public void changeAdmissionRequestStatus(Long admissionRequestId, AdmissionRequestStatus newAdmissionRequestStatus) {
+        try (AdmissionRequestDAO dao = daoFactory.getAdmissionRequestDAO()) {
+            dao.changeAdmissionRequestStatus(admissionRequestId, newAdmissionRequestStatus);
+        } catch (SQLException e) {
+            throw new DbProcessingException(e.getMessage());
+        }
     }
 
     public AdmissionRequest findById(Long admissionRequestId) {
-        try {
-            return daoFactory.getAdmissionRequestDAO().findAdmissionRequest(admissionRequestId)
+        try (AdmissionRequestDAO dao = daoFactory.getAdmissionRequestDAO()){
+            return dao.findById(admissionRequestId)
                     .orElseThrow(() -> new CanNotFindRequestById("Can not find request by id: " + admissionRequestId));
         } catch (SQLException e) {
             throw new DbProcessingException(e.getMessage());
         }
     }
 
+    public List<AdmissionRequest> findAll() {
+        try (AdmissionRequestDAO dao = daoFactory.getAdmissionRequestDAO()) {
+            return dao.findAll();
+        } catch (SQLException e) {
+            throw new DbProcessingException(e.getMessage());
+        }
+
+    }
+
+    public void create(AdmissionRequest admissionRequest) {
+
+        try (AdmissionRequestDAO dao = daoFactory.getAdmissionRequestDAO()) {
+            dao.create(admissionRequest);
+        } catch (SQLException e) {
+            throw new DbProcessingException(e.getMessage());
+        }
+    }
+
+    public List<AdmissionRequest> selectAdmissionRequestsForApplicantWithId(Long id) {
+        try (AdmissionRequestDAO dao = daoFactory.getAdmissionRequestDAO()) {
+            return dao.selectAdmissionRequestsForApplicantWithId(id);
+        } catch (SQLException e) {
+            throw new DbProcessingException("Can not get requests for applicant");
+        }
+    }
+
+    public void delete(Long id) {
+        try (AdmissionRequestDAO dao = daoFactory.getAdmissionRequestDAO()) {
+            dao.delete(id);
+        } catch (SQLException e) {
+            throw new DbProcessingException("Can not delete request with id:" + id);
+        }
+    }
 
     private List<StatementElement> getStatementElements(List<AdmissionRequest> admissionRequests) {
         List<StatementElement> statementElementList = new ArrayList<>();

@@ -1,7 +1,7 @@
 package com.senin.demo.controller.command.admin;
 
 import com.senin.demo.controller.command.Command;
-import com.senin.demo.service.ApplicantService;
+import com.senin.demo.exception.DbProcessingException;
 import com.senin.demo.service.FacultyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +19,25 @@ public class DeleteFacultyCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String execute(HttpServletRequest request, HttpServletResponse response)  {
         Long facultyId = Long.valueOf(request.getParameter("facultyId"));
 
-        facultyService.delete(facultyId);
-        LOG.info("Faculty with id: {} deleted", facultyId);
+        try {
+            facultyService.delete(facultyId);
+            LOG.info("Faculty with id: {} deleted", facultyId);
+        } catch (DbProcessingException e) {
+            LOG.error("Error occurred while delete faculty : {}", e.getMessage());
+            request.setAttribute("errorMessage", e.getMessage());
+            return "/WEB-INF/jsp/errorPage.jsp";
+        }
 
-        response.sendRedirect("/controller?command=adminWorkspace");
+        try {
+            response.sendRedirect("/controller?command=adminWorkspace");
+        } catch (IOException e) {
+            request.setAttribute("errorMessage", e.getMessage());
+            return "/WEB-INF/jsp/errorPage.jsp";
+        }
+
         return "";
     }
 }

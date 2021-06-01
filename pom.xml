@@ -23,8 +23,6 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-
-
         <!--Web-->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -51,9 +49,6 @@
             <artifactId>tomcat-catalina</artifactId>
             <version>10.0.0-M9</version>
         </dependency>
-
-
-
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
@@ -93,13 +88,10 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
-
-
-
     </dependencies>
 
     <build>
-        <finalName>admissions_servlet</finalName>
+        <finalName>admissions-committee-servlet</finalName>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
                 <plugin>

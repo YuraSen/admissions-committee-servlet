@@ -37,6 +37,6 @@ public class CheckRequestFromFacultyReqListCommand implements Command {
         }
         request.setAttribute("admissionRequest", admissionRequest);
 
-        return "WEB-INF\\jsp\\admin\\checkRequestFromFacultyRequestList.jsp";
+        return "WEB-INF/jsp/admin/checkRequestFromFacultyRequestList.jsp";
     }
 }

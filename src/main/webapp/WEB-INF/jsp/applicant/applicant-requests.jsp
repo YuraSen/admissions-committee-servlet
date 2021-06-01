@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
+         pageEncoding="UTF-8" %>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://admissions-committee-servlet/functions" %>
 <%@ page session="true" %>
 
 <fmt:setLocale value="${sessionScope.lang}"/>
@@ -13,11 +14,13 @@
     <title>Requests of Applicant</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 </head>
 <body>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <c:choose>
         <c:when test="${sessionScope.applicant.role=='USER'}">
@@ -29,26 +32,33 @@
                     key="navbar.Admission_Board_App"/></a>
         </c:otherwise>
     </c:choose>
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav">
+
             <li class="nav-item dropdown">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"
                                             data-target="#navbarDropdown"><fmt:message key="navbar.Change_Language"/>
                         <b class="caret"></b></a>
                         <div class="dropdown-menu dropdown-menu-right" id="navbarDropdown">
-                            <a class="dropdown-item" href="/controller?command=getApplicantRequestsList&sessionLocale=en&facultyId=${faculty.id}">
+                            <a class="dropdown-item"
+                               href="/controller?command=getApplicantRequestsList&sessionLocale=en&facultyId=${faculty.id}">
                                 <fmt:message key="navbar.English"/></a>
-                            <a class="dropdown-item" href="/controller?command=getApplicantRequestsList&sessionLocale=uk&facultyId=${faculty.id}">
+                            <a class="dropdown-item"
+                               href="/controller?command=getApplicantRequestsList&sessionLocale=uk&facultyId=${faculty.id}">
                                 <fmt:message key="navbar.Ukrainian"/></a>
                         </div>
+
                     </li>
                 </ul>
             </li>
+
+
             <c:choose>
             <c:when test="${sessionScope.applicant!=null}">
             <div class="nav-item dropdown ">
@@ -65,29 +75,36 @@
                             <a class="dropdown-item" href="controller?command=logout"><fmt:message
                                     key="navbar.logout"/></a>
                         </div>
+
                         </form>
                     </li>
                 </ul>
             </div>
+
             </c:when>
             <c:otherwise>
             <div>
+
                 <form class="form-inline my-2 mr-2 my-lg-0">
                     <a class="btn btn-primary my-2 my-sm-0" href="/controller?command=loginForm" role="button">
                         <fmt:message key="navbar.login"/></a>
                 </form>
             </div>
             <div>
+
                 <form class="form-inline my-2 my-lg-0">
                     <a class="btn btn-primary my-2 my-sm-0" href="/controller?command=registrationForm" role="button">
                         <fmt:message key="navbar.registration"/></a>
                 </form>
+
             </div>
 
             </c:otherwise>
             </c:choose>
     </div>
 </nav>
+
+
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
@@ -96,7 +113,7 @@
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col col-xs-6">
-                            <h2 class="text-danger"><fmt:message key="applicant.admission.requests"/> </h2>
+                            <h2 class="text-danger"><fmt:message key="applicant.admission.requests"/></h2>
                         </div>
                     </div>
                 </div>
@@ -105,6 +122,7 @@
                     <table class="table table-striped table-bordered table-list">
                         <thead>
                         <tr>
+
                             <th><fmt:message key="applicant.admission.requests.id"/></th>
                             <th><fmt:message key="applicant.admission.requests.first.name"/></th>
                             <th><fmt:message key="applicant.admission.requests.last.name"/></th>
@@ -112,26 +130,50 @@
                             <th><fmt:message key="applicant.admission.requests.status"/></th>
                             <th><fmt:message key="applicant.admission.requests.datetime"/></th>
 
+
                             <th align="center"><fmt:message key="applicant.admission.requests.delete"/></th>
                         </tr>
                         </thead>
                         <tbody>
+
                         <c:forEach var="req" items="${requestsList}">
+
                             <tr>
+
                                 <td>${req.id}</td>
                                 <td>${req.applicant.applicantProfile.firstName}</td>
                                 <td>${req.applicant.applicantProfile.lastName}</td>
-                                <td>${req.faculty.name}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.lang eq 'uk'}">
+                                            <c:choose>
+                                                <c:when test="${empty req.faculty.nameUk}">
+                                                    ${req.faculty.nameEn}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    ${req.faculty.nameUk}
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${req.faculty.nameEn}
+                                        </c:otherwise>
+                                    </c:choose>
+
+
+                                </td>
                                 <td>${req.admissionRequestStatus.name()}</td>
                                 <td>
-                                        ${req.creationDateTime}
+                                        ${fn:formatDateTime(req.creationDateTime)}
                                 </td>
+
                                 <td align="center">
                                     <form
                                             action="controller" method="post">
                                         <input type="hidden" name="command" value="deleteAdmissionRequest">
                                         <input type="hidden" name="admissionRequestId" value="${req.id}">
-                                        <button class="btn btn-primary" type="submit"><fmt:message key="capplicant.admission.requests.delete"/></button>
+                                        <button class="btn btn-primary" type="submit"><fmt:message
+                                                key="applicant.admission.requests.delete"/></button>
                                     </form>
 
                                 </td>
@@ -147,7 +189,10 @@
         </div>
     </div>
 </div>
+<br>
+<br>
 </body>
+
 </html>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

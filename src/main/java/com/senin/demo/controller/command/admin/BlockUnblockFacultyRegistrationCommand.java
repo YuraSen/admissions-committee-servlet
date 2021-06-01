@@ -13,14 +13,14 @@ import java.io.IOException;
 
 public class BlockUnblockFacultyRegistrationCommand implements Command {
     static final Logger LOG = LoggerFactory.getLogger(BlockUnblockFacultyRegistrationCommand.class);
-    private FacultyService facultyService;
+    private final FacultyService facultyService;
 
     public BlockUnblockFacultyRegistrationCommand(FacultyService facultyService) {
         this.facultyService = facultyService;
     }
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String execute(HttpServletRequest request, HttpServletResponse response)  {
 
         String action = request.getParameter("action");
         Long facultyId = Long.valueOf(request.getParameter("facultyId"));
@@ -32,7 +32,12 @@ public class BlockUnblockFacultyRegistrationCommand implements Command {
             request.setAttribute("errorMessage", e.getMessage());
             return "/WEB-INF/jsp/errorPage.jsp";
         }
-        response.sendRedirect("/controller?command=adminWorkspace");
+        try {
+            response.sendRedirect("/controller?command=adminWorkspace");
+        } catch (IOException e) {
+            request.setAttribute("errorMessage", "redirect error");
+            return "/WEB-INF/jsp/errorPage.jsp";
+        }
         return "";
     }
 }

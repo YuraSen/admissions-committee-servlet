@@ -28,9 +28,9 @@ public class CommandAccessFilter implements Filter {
             LOG.debug("Filter finished");
             chain.doFilter(request, response);
         } else {
-            String errorMessasge = "You do not have permission to access the requested resource";
+            String errorMessage = "You do not have permission to access the requested resource";
 
-            request.setAttribute("errorMessage", errorMessasge);
+            request.setAttribute("errorMessage", errorMessage);
 
             request.getRequestDispatcher("/WEB-INF/jsp/errorPage.jsp")
                     .forward(request, response);

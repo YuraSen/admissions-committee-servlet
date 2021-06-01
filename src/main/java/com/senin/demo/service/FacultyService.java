@@ -1,10 +1,11 @@
 package com.senin.demo.service;
 
 import com.senin.demo.exception.DbProcessingException;
+import com.senin.demo.exception.FacultyNotFoundException;
 import com.senin.demo.model.DAO.DAOFactory;
 import com.senin.demo.model.DAO.FacultyDAO;
-import com.senin.demo.model.dto.FacultyListDTO;
 import com.senin.demo.model.entity.Faculty;
+import com.senin.demo.utils.util.FacultyPage;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -22,9 +23,8 @@ public class FacultyService {
     }
 
     public void changeAdmissionOpenStatus(String action, Long facultyId) {
-
-        try {
-            daoFactory.getFacultyDAO().changeAdmissionOpenStatus(action, facultyId);
+        try (FacultyDAO dao = daoFactory.getFacultyDAO()) {
+            dao.changeAdmissionOpenStatus(action, facultyId);
         } catch (SQLException e) {
             throw new DbProcessingException(e.getMessage());
         }
@@ -32,16 +32,17 @@ public class FacultyService {
 
 
     public void create(Faculty faculty) {
-        try {
-            daoFactory.getFacultyDAO().create(faculty);
+        try (FacultyDAO dao = daoFactory.getFacultyDAO()) {
+            dao.create(faculty);
         } catch (SQLException e) {
             throw new DbProcessingException(e.getMessage());
         }
     }
 
     public Faculty findById(Long id) {
-        try {
-            return daoFactory.getFacultyDAO().findById(id);
+        try (FacultyDAO dao = daoFactory.getFacultyDAO()) {
+            return dao.findById(id)
+                    .orElseThrow(() -> new FacultyNotFoundException("Faculty not found!"));
         } catch (SQLException e) {
             throw new DbProcessingException(e.getMessage());
         }
@@ -49,18 +50,26 @@ public class FacultyService {
 
     public void update(Faculty faculty) {
 
-        try {
-            daoFactory.getFacultyDAO().update(faculty);
+        try (FacultyDAO dao = daoFactory.getFacultyDAO()) {
+            dao.update(faculty);
         } catch (SQLException e) {
             throw new DbProcessingException(e.getMessage());
         }
     }
 
     public void delete(Long id) {
-        try {
-            daoFactory.getFacultyDAO().delete(id);
+        try (FacultyDAO dao = daoFactory.getFacultyDAO()) {
+            dao.delete(id);
         } catch (SQLException e) {
             throw new DbProcessingException(e.getMessage());
+        }
+    }
+
+    public FacultyPage findAllSorted(String name, String direction, int page, int itemsPerPage) {
+        try (FacultyDAO dao = daoFactory.getFacultyDAO()) {
+            return dao.findAllSorted(name, direction, page, itemsPerPage);
+        } catch (SQLException e) {
+            throw new DbProcessingException("Can not get sorted list");
         }
     }
 }

@@ -26,11 +26,11 @@ public class AdminWorkspaceCommand implements Command {
         try {
             facultyList = facultyService.findAll();
         } catch (DbProcessingException e) {
-            LOG.error("Error occurred while getting all faculties list: {}",e.getMessage());
+            LOG.error("Error occurred while getting all faculties list: {}", e.getMessage());
             request.setAttribute("errorMessage", e.getMessage());
             return "/WEB-INF/jsp/errorPage.jsp";
         }
         request.setAttribute("facultiesList", facultyList);
-        return "/WEB-INF/jsp/admin/admin_workspace.jsp";
+        return "/WEB-INF/jsp/admin/adminWorkspace.jsp";
     }
 }

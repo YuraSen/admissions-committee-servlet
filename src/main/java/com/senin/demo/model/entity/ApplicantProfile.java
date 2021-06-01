@@ -11,6 +11,15 @@ public class ApplicantProfile {
     private String school;
     private String phoneNumber;
     private Applicant applicant;
+    private String fileName;
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     public Long getId() {
         return id;
